@@ -1,6 +1,36 @@
 const inquirer = require("inquirer")
 const fs = require("fs")
 
+// Questions for user input
+let questions = [
+    {
+    type: "input",
+    message: "What is the team member`s name?",
+    name: "member-name",
+   },
+   {
+    type: "input",
+    message: "What is their job title?",
+    name: "title",
+   },
+   {
+    type: "input",
+    message: "What is their ID",
+    name: "id",
+   },
+   {
+    type: "input",
+    message: "What is their email?",
+    name: "email",
+   },
+   {
+    type: "input",
+    message: "What is their github link?",
+    name: "github",
+   },
+   
+];
+
 const newHTML = `<!DOCTYPE html>
 <html lang="en">
     <meta charset="UTF-8">
@@ -28,3 +58,17 @@ const newHTML = `<!DOCTYPE html>
       </div>
 </body>
 </html>`;
+
+// Initialize app function
+function init() {
+    inquirer.prompt(questions)
+        .then(function (memberAnswers) {
+       //  Creates file
+        fs.writeFileSync("teamProfile.html", generateTeam(memberAnswers));
+        (err) =>
+        err ? console.log(err) : console.log("Successful");
+     });
+    };
+    
+    // Initialize app
+    init();
