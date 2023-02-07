@@ -1,5 +1,5 @@
-const inquirer = require("inquirer")
-const fs = require("fs")
+const inquirer = require("inquirer");
+const fs = require("fs");
 
 // Questions for user input
 let questions = [
@@ -46,13 +46,13 @@ const newHTML = `<!DOCTYPE html>
             <h1>Team Profile</h1>
           </div>
           <div class="col-4 text-success">
-            ${answer.name}
+            ${questions.name}
             <br>
-            ${answer.title}
+            ${questions.title}
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${answer.id}</li>
-                <li class="list-group-item">Email: ${answer.email}</li></li>
-                <li class="list-group-item">Github: ${answer.github}</li></li>
+                <li class="list-group-item">ID: ${questions.id}</li>
+                <li class="list-group-item">Email: ${questions.email}</li></li>
+                <li class="list-group-item">Github: ${questions.github}</li></li>
               </ul>
         </div>
       </div>
