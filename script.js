@@ -1,12 +1,16 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
+const  Manager = require("./lib/manager");
+const Engineer = require("./lib/engineer");
+
+const memberArray = [];
 
 // Questions for user input
 let questions = [
     {
     type: "input",
     message: "What is the team member`s name?",
-    name: "member-name",
+    name: "memberName",
    },
    {
     type: "input",
@@ -25,13 +29,103 @@ let questions = [
    },
    {
     type: "input",
-    message: "What is their github link?",
-    name: "github",
+    message: "What is the manager`s office number?",
+    name: "officeNumber",
    },
    
 ];
+function addEmployee (){
+  inquirer.prompt([
+    {
+      type: "list",
+      message: "Who do you want to add?",
+      name: "choice",
+      choices: ["engineer", "intern", "build team"]
+     },
+  
+    ])
+    .then(answers=>{
+      if(answers.choice == "engineer"){
+        addEngineer()
+      }
+      else if(answers.choice == "intern"){
+        addIntern()
+      }
+      else if(answers.choice == "build team"){
+        buildTeam()
+      }
+    })
+}
+function addEngineer(){
+  inquirer.prompt([
+    {
+      type: "input",
+      message: "What is the team member`s name?",
+      name: "memberName",
+     },
+     {
+      type: "input",
+      message: "What is their ID",
+      name: "id",
+     },
+     {
+      type: "input",
+      message: "What is their email?",
+      name: "email",
+     },
+     {
+      type: "input",
+      message: "What is github?",
+      name: "github",
+     },
+  ]
 
-const newHTML = `<!DOCTYPE html>
+  )
+  .then(answers=>{
+    const engineer = new Engineer(answers.memberName, answers.id, answers.email, answers.github);
+    memberArray.push(engineer);
+    addEmployee();
+  })
+}
+function addIntern(){
+  inquirer.prompt([
+    {
+      type: "input",
+      message: "What is the team member`s name?",
+      name: "memberName",
+     },
+     {
+      type: "input",
+      message: "What is their ID",
+      name: "id",
+     },
+     {
+      type: "input",
+      message: "What is their email?",
+      name: "email",
+     },
+     {
+      type: "input",
+      message: "What school did you go to?",
+      name: "school",
+     },
+  ]
+
+  )
+  .then(answers=>{
+    const intern = new Intern(answers.memberName, answers.id, answers.email, answers.school);
+    memberArray.push(intern);
+    addEmployee();
+  })
+}
+function buildTeam(){
+  fs.writeFileSync("teamProfile.html", generateTeam(memberArray));
+  (err) =>
+  err ? console.log(err) : console.log("Successful");
+}
+
+function generateTeam (members){
+return `<!DOCTYPE html>
 <html lang="en">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -45,28 +139,65 @@ const newHTML = `<!DOCTYPE html>
           <div class="col-12 bg-danger-subtle text-center">
             <h1>Team Profile</h1>
           </div>
-          <div class="col-4 text-success">
-            ${questions.name}
+          ${members.map(employee => {
+            if (employee.getrole() == "manager"){
+              return `
+              <div class="col-4 text-success">
+            ${employee.name}
             <br>
-            ${questions.title}
+            ${employee.getrole()}
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${questions.id}</li>
-                <li class="list-group-item">Email: ${questions.email}</li></li>
-                <li class="list-group-item">Github: ${questions.github}</li></li>
+                <li class="list-group-item">ID: ${employee.id}</li>
+                <li class="list-group-item">Email: ${employee.email}</li></li>
+                <li class="list-group-item">Github: ${employee.officeNumber}</li></li>
               </ul>
         </div>
+              `
+            } 
+            else if (employee.getrole() == "engineer"){
+              return `
+              <div class="col-4 text-success">
+            ${employee.name}
+            <br>
+            ${employee.getrole()}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">ID: ${employee.id}</li>
+                <li class="list-group-item">Email: ${employee.email}</li></li>
+                <li class="list-group-item">Github: ${employee.github}</li></li>
+              </ul>
+        </div>
+              `
+            }
+            else if (employee.getrole() == "intern"){
+              return `
+              <div class="col-4 text-success">
+            ${employee.name}
+            <br>
+            ${employee.getrole()}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">ID: ${employee.id}</li>
+                <li class="list-group-item">Email: ${employee.email}</li></li>
+                <li class="list-group-item">Github: ${employee.school}</li></li>
+              </ul>
+        </div>
+              `
+            }
+          })}
       </div>
 </body>
-</html>`;
-
+</html>`
+}
 // Initialize app function
 function init() {
     inquirer.prompt(questions)
         .then(function (memberAnswers) {
+          console.log(memberAnswers)
        //  Creates file
-        fs.writeFileSync("teamProfile.html", generateTeam(memberAnswers));
-        (err) =>
-        err ? console.log(err) : console.log("Successful");
+       const manager = new Manager(memberAnswers.memberName, memberAnswers.id , memberAnswers.email , memberAnswers.officeNumber);
+       memberArray.push(manager);
+       addEmployee();
+       addIntern();
+       generateTeam();
      });
     };
     
