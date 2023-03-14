@@ -1,8 +1,10 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
+const path = require('path')
+const page = require("./assets/template")
 const  Manager = require("./lib/manager");
 const Engineer = require("./lib/engineer");
-
+const Intern = require("./lib/intern");
 const memberArray = [];
 
 // Questions for user input
@@ -136,17 +138,19 @@ return `<!DOCTYPE html>
 <body>
     <div class="container">
         <div class="row">
-          <div class="col-12 bg-danger-subtle text-center">
+          <div class="col-12 	--bs-danger-border-subtle">
             <h1>Team Profile</h1>
           </div>
           ${members.map(employee => {
             if (employee.getrole() == "manager"){
               return `
-              <div class="col-4 text-success">
-            ${employee.name}
+              <div class="col-4 text-success border border-primary rounded">
+              <div class="p-3 mb-2 bg-primary text-white">
+           ☕ ${employee.name}
             <br>
             ${employee.getrole()}
-            <ul class="list-group list-group-flush">
+            </div>
+            <ul class="list-group list-group-flush ">
                 <li class="list-group-item">ID: ${employee.id}</li>
                 <li class="list-group-item">Email: ${employee.email}</li></li>
                 <li class="list-group-item">Github: ${employee.officeNumber}</li></li>
@@ -156,8 +160,8 @@ return `<!DOCTYPE html>
             } 
             else if (employee.getrole() == "engineer"){
               return `
-              <div class="col-4 text-success">
-            ${employee.name}
+              <div class="col-4 text-success border border-primary rounded">
+            👓${employee.name}
             <br>
             ${employee.getrole()}
             <ul class="list-group list-group-flush">
@@ -170,8 +174,8 @@ return `<!DOCTYPE html>
             }
             else if (employee.getrole() == "intern"){
               return `
-              <div class="col-4 text-success">
-            ${employee.name}
+              <div class="col-4 text-success border border-primary rounded">
+            🧑🏽‍🎓${employee.name}
             <br>
             ${employee.getrole()}
             <ul class="list-group list-group-flush">
@@ -195,9 +199,8 @@ function init() {
        //  Creates file
        const manager = new Manager(memberAnswers.memberName, memberAnswers.id , memberAnswers.email , memberAnswers.officeNumber);
        memberArray.push(manager);
-       addEmployee();
-       addIntern();
        generateTeam();
+       buildTeam();
      });
     };
     
